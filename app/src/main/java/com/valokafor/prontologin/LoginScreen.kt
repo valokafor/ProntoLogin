@@ -1,5 +1,6 @@
 package com.valokafor.prontologin
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,11 +31,17 @@ import androidx.compose.ui.unit.sp
 import com.valokafor.prontologin.ui.theme.*
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onSignInButtonClicked: (String, String) -> Unit,
+    onGoogleSignInButtonClicked: () -> Unit,
+    onFacebookSignInButtonClicked: () -> Unit,
+    onSignUpButtonClicked: () -> Unit,
+) {
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val checkedState = remember { mutableStateOf(false) }
+
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -169,7 +176,7 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { onSignInButtonClicked(email.text, password.text) },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = AppBlueColor),
                 modifier = Modifier
@@ -212,7 +219,7 @@ fun LoginScreen() {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
-                    onClick = {},
+                    onClick = {onGoogleSignInButtonClicked()},
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = GoogleButtonColor),
                     modifier = Modifier
@@ -238,7 +245,7 @@ fun LoginScreen() {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { onFacebookSignInButtonClicked() },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = FacebookButtonColor),
                     modifier = Modifier
@@ -284,7 +291,7 @@ fun LoginScreen() {
                     color = AppBlueColor,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {  }
+                    modifier = Modifier.clickable {onSignUpButtonClicked()  }
                 )
             }
         }
@@ -294,5 +301,12 @@ fun LoginScreen() {
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    LoginScreen(
+        onSignInButtonClicked = {email, password ->
+            Log.i("LoginScreen", "Email: $email, Password: $password")
+        },
+        onFacebookSignInButtonClicked = {},
+        onGoogleSignInButtonClicked = {},
+        onSignUpButtonClicked = {}
+    )
 }
