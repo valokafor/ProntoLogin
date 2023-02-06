@@ -5,8 +5,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -31,17 +29,19 @@ import androidx.compose.ui.unit.sp
 import com.valokafor.prontologin.ui.theme.*
 
 @Composable
-fun LoginScreen(
-    onSignInButtonClicked: (String, String) -> Unit,
-    onGoogleSignInButtonClicked: () -> Unit,
-    onFacebookSignInButtonClicked: () -> Unit,
-    onSignUpButtonClicked: () -> Unit,
-) {
+fun LoginScreen() {
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val checkedState = remember { mutableStateOf(false) }
 
+    val onSignInButtonClicked: (String, String) -> Unit = {email, password ->
+        Log.i("LoginScreen", "Email: $email, Password: $password")
+    }
+    val onGoogleSignInButtonClicked: () -> Unit = {}
+    val onFacebookSignInButtonClicked: () -> Unit = {}
+    val onSignUpButtonClicked: () -> Unit = {}
+    val onForgortPasswordButtonClicked: () -> Unit = {}
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -91,7 +91,7 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = email,
-                onValueChange = {email = it},
+                onValueChange = { email = it },
                 label = { Text(text = stringResource(id = R.string.label_email_address)) },
                 placeholder = { Text(text = stringResource(id = R.string.hint_enter_email)) },
                 shape = RoundedCornerShape(8.dp),
@@ -117,7 +117,7 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = password,
-                onValueChange = {password = it},
+                onValueChange = { password = it },
                 label = { Text(text = stringResource(id = R.string.label_password)) },
                 placeholder = { Text(text = stringResource(id = R.string.hint_enter_password)) },
                 shape = RoundedCornerShape(8.dp),
@@ -148,9 +148,7 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = checkedState.value,
                         onCheckedChange = { checkedState.value = it }
@@ -161,7 +159,7 @@ fun LoginScreen(
                         color = AppFocusColor
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 Text(
@@ -169,7 +167,7 @@ fun LoginScreen(
                     fontSize = 14.sp,
                     color = AppBlueColor,
                     modifier = Modifier
-                        .clickable {  }
+                        .clickable { onForgortPasswordButtonClicked()}
                 )
             }
 
@@ -219,7 +217,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
-                    onClick = {onGoogleSignInButtonClicked()},
+                    onClick = { onGoogleSignInButtonClicked() },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = GoogleButtonColor),
                     modifier = Modifier
@@ -227,7 +225,7 @@ fun LoginScreen(
                         .fillMaxWidth()
                         .weight(0.5f)
                 ) {
-                    Row (verticalAlignment = Alignment.CenterVertically) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = R.drawable.google_icon),
                             contentDescription = "Google icon",
@@ -253,7 +251,7 @@ fun LoginScreen(
                         .fillMaxWidth()
                         .weight(0.5f)
                 ) {
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(
@@ -291,7 +289,7 @@ fun LoginScreen(
                     color = AppBlueColor,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {onSignUpButtonClicked()  }
+                    modifier = Modifier.clickable { onSignUpButtonClicked() }
                 )
             }
         }
@@ -301,12 +299,5 @@ fun LoginScreen(
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(
-        onSignInButtonClicked = {email, password ->
-            Log.i("LoginScreen", "Email: $email, Password: $password")
-        },
-        onFacebookSignInButtonClicked = {},
-        onGoogleSignInButtonClicked = {},
-        onSignUpButtonClicked = {}
-    )
+    LoginScreen()
 }
