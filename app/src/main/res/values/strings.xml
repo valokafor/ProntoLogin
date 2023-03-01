@@ -9,7 +9,12 @@
     <string name="remember_me">Remember Me</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="sign_in">Sign In</string>
+    <string name="name_label">Name</string>
+    <string name="hint_enter_name">Full name</string>
     <string name="or_continue">Or Continue with</string>
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="hint_confirm_password">Re-enter password</string>
     <string name="do_not_have_account">Don\'t have an account?</string>
+    <string name="sign_up_info">Add your details and we\'ll keep you updated.</string>
     <string name="sign_up">Sign Up</string>
 </resources>
