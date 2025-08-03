@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.daggerHilt)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -54,6 +55,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.navigation)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.compose.ui.googlefonts)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
