@@ -10,7 +10,7 @@ Create a **login screen** for an Android app called **Pronto Task** using **Jetp
 
 - **UI Framework**: Jetpack Compose
 - **Architecture**: MVVM with ViewModel and View State
-- **Design System**: Material Design 3
+- **Design System**: Material Design 3 using ProntoLoginTheme
 - **Auth**: Firebase Authentication (Firebase already initialized)
 - **Base Project**: Blank Android app with `MainActivity` and a "Hello World" placeholder that should be removed
 
@@ -34,14 +34,21 @@ Create a **login screen** for an Android app called **Pronto Task** using **Jetp
 
 ## 🔧 Functional Requirements
 
+- **Home Screen**
+  - Default screen, if not login go to login screen, else
+  - Show Display name from Firebase with Welcome message
+  - Put placeholder coming soon message
+
 - **Sign In**
   - Use FirebaseAuth to sign in with email and password
   - Handle loading, success, and error states
+  - Navigate to home screen after success
 
 - **Sign Up**
   - Allow new users to create an account with email and password
+  - Add full name field and after signup, call Firebase to set the display name to the name vale
   - Reuse email/password validation rules
-  - Navigate back to login after success
+  - Navigate to home after success
 
 - **Forgot Password**
   - Allow user to request a password reset email
@@ -69,7 +76,7 @@ Follow modern Android best practices:
 
 ## 🧼 Clean Up
 
-- Remove the default "Hello World" content from `MainActivity`
+- Remove the default Greetings and GreetingPreview content from `MainActivity`
 - Replace with proper navigation and the login screen implementation
 
 ---
