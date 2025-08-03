@@ -20,6 +20,15 @@ object FormValidation {
         return isValidEmail(email) && isValidPassword(password)
     }
 
+    fun isValidName(name: String): Boolean {
+        return name.isNotBlank() && name.trim().length >= 2
+    }
+
+    fun isSignUpFormValid(fullName: String, email: String, password: String, confirmPassword: String): Boolean {
+        return isValidName(fullName) && isValidEmail(email) && isValidPassword(password) && doPasswordsMatch(password, confirmPassword)
+    }
+
+    // Keep the old method for backward compatibility
     fun isSignUpFormValid(email: String, password: String, confirmPassword: String): Boolean {
         return isValidEmail(email) && isValidPassword(password) && doPasswordsMatch(password, confirmPassword)
     }

@@ -19,11 +19,11 @@ class SignUpViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Idle)
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, fullName: String) {
         viewModelScope.launch {
             _uiState.value = SignUpUiState.Loading
 
-            val result = authRepository.signUp(email, password)
+            val result = authRepository.signUp(email, password, fullName)
 
             _uiState.value = if (result.isSuccess) {
                 SignUpUiState.Success(result.message ?: "Account created successfully")

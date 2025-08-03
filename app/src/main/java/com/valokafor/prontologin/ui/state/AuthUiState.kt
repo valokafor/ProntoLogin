@@ -27,3 +27,9 @@ sealed class ForgotPasswordUiState {
     data class Success(val message: String) : ForgotPasswordUiState()
     data class Error(val message: String) : ForgotPasswordUiState()
 }
+
+sealed class HomeUiState {
+    object Loading : HomeUiState()
+    data class Authenticated(val displayName: String) : HomeUiState()
+    object NotAuthenticated : HomeUiState()
+}

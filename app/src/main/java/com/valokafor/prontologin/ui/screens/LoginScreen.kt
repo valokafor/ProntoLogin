@@ -27,6 +27,15 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isFormValid = FormValidation.isLoginFormValid(email, password)
 
+    // Navigate to home on successful login
+    LaunchedEffect(uiState) {
+        if (uiState is LoginUiState.Success) {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(

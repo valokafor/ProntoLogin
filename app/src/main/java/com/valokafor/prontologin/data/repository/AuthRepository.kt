@@ -2,6 +2,8 @@ package com.valokafor.prontologin.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.valokafor.prontologin.data.model.AuthResult
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -31,9 +33,18 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun signUp(email: String, password: String): AuthResult {
+    suspend fun signUp(email: String, password: String, fullName: String): AuthResult {
         return try {
-            firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            
+            // Update the user's display name
+            authResult.user?.let { user ->
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setDisplayName(fullName)
+                    .build()
+                user.updateProfile(profileUpdates).await()
+            }
+            
             AuthResult(isSuccess = true, message = "Account created successfully")
         } catch (e: FirebaseAuthException) {
             AuthResult(
@@ -80,5 +91,13 @@ class AuthRepository @Inject constructor(
             "ERROR_WEAK_PASSWORD" -> "Password is too weak"
             else -> exception.message ?: "Authentication failed"
         }
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return firebaseAuth.currentUser
+    }
+
+    fun signOut() {
+        firebaseAuth.signOut()
     }
 }

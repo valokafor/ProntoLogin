@@ -24,18 +24,19 @@ fun SignUpScreen(
     navController: NavController,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
+    var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
     val uiState by viewModel.uiState.collectAsState()
-    val isFormValid = FormValidation.isSignUpFormValid(email, password, confirmPassword)
+    val isFormValid = FormValidation.isSignUpFormValid(fullName, email, password, confirmPassword)
 
-    // Navigate back to login on successful signup
+    // Navigate to home on successful signup
     LaunchedEffect(uiState) {
         if (uiState is SignUpUiState.Success) {
-            navController.navigate("login") {
-                popUpTo("login") { inclusive = true }
+            navController.navigate("home") {
+                popUpTo("signup") { inclusive = true }
             }
         }
     }
@@ -68,6 +69,16 @@ fun SignUpScreen(
                 Text(
                     text = "Create Account",
                     style = MaterialTheme.typography.headlineMedium
+                )
+
+                AuthTextField(
+                    value = fullName,
+                    onValueChange = { fullName = it },
+                    label = "Full Name",
+                    isError = fullName.isNotBlank() && fullName.trim().length < 2,
+                    supportingText = if (fullName.isNotBlank() && fullName.trim().length < 2) {
+                        "Please enter your full name"
+                    } else null
                 )
 
                 AuthTextField(
@@ -122,7 +133,7 @@ fun SignUpScreen(
                 }
 
                 AuthButton(
-                    onClick = { viewModel.signUp(email, password) },
+                    onClick = { viewModel.signUp(email, password, fullName.trim()) },
                     text = "Create Account",
                     enabled = isFormValid,
                     isLoading = uiState is SignUpUiState.Loading
