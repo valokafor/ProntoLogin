@@ -39,6 +39,7 @@ import com.valokafor.prontologin.presentation.components.LoadingButton
 fun LoginScreen(
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
+    onLoginSuccess: () -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -46,7 +47,7 @@ fun LoginScreen(
     
     LaunchedEffect(uiState.isLoginSuccessful) {
         if (uiState.isLoginSuccessful) {
-            // Handle successful login - navigation will be handled by the parent
+            onLoginSuccess()
         }
     }
     

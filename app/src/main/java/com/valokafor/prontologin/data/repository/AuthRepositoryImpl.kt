@@ -38,6 +38,23 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
     
+    override suspend fun updateDisplayName(displayName: String): Result<Unit> {
+        return try {
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                    .setDisplayName(displayName)
+                    .build()
+                user.updateProfile(profileUpdates).await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("No user logged in"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception(e.toUserFriendlyMessage()))
+        }
+    }
+    
     override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
         return try {
             firebaseAuth.sendPasswordResetEmail(email).await()

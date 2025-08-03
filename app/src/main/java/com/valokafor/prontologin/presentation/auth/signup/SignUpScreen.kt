@@ -103,6 +103,21 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(48.dp))
             
             AuthTextField(
+                value = uiState.name,
+                onValueChange = viewModel::onNameChange,
+                label = "Full Name",
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
+                isError = uiState.nameError != null,
+                errorMessage = uiState.nameError
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            AuthTextField(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
                 label = "Email",

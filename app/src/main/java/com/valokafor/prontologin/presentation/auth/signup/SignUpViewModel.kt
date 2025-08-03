@@ -2,6 +2,7 @@ package com.valokafor.prontologin.presentation.auth.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.valokafor.prontologin.data.repository.AuthRepository
 import com.valokafor.prontologin.domain.usecase.SignUpUseCase
 import com.valokafor.prontologin.util.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,11 +15,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
+    
+    fun onNameChange(name: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                name = name,
+                nameError = if (name.isNotEmpty() && name.isBlank()) "Name cannot be empty" else null,
+                generalError = null
+            )
+        }
+    }
     
     fun onEmailChange(email: String) {
         val emailValidation = Validator.validateEmail(email)
@@ -91,6 +103,7 @@ class SignUpViewModel @Inject constructor(
     fun onSignUp() {
         val currentState = _uiState.value
         
+        val nameValid = currentState.name.trim().isNotBlank()
         val emailValidation = Validator.validateEmail(currentState.email)
         val passwordValidation = Validator.validatePassword(currentState.password)
         val passwordMatchValidation = Validator.validatePasswordMatch(
@@ -100,13 +113,15 @@ class SignUpViewModel @Inject constructor(
         
         _uiState.update { state ->
             state.copy(
+                nameError = if (!nameValid) "Name is required" else null,
                 emailError = emailValidation.errorMessage,
                 passwordError = passwordValidation.errorMessage,
                 confirmPasswordError = passwordMatchValidation.errorMessage
             )
         }
         
-        if (!emailValidation.isValid || 
+        if (!nameValid ||
+            !emailValidation.isValid || 
             !passwordValidation.isValid || 
             !passwordMatchValidation.isValid) {
             return
@@ -120,13 +135,28 @@ class SignUpViewModel @Inject constructor(
                 password = currentState.password
             ).fold(
                 onSuccess = { user ->
-                    _uiState.update { state ->
-                        state.copy(
-                            isLoading = false,
-                            isSignUpSuccessful = true,
-                            signedUpUser = user
-                        )
-                    }
+                    // Update display name after successful signup
+                    authRepository.updateDisplayName(currentState.name.trim()).fold(
+                        onSuccess = {
+                            _uiState.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    isSignUpSuccessful = true,
+                                    signedUpUser = user
+                                )
+                            }
+                        },
+                        onFailure = { exception ->
+                            // Even if display name update fails, signup was successful
+                            _uiState.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    isSignUpSuccessful = true,
+                                    signedUpUser = user
+                                )
+                            }
+                        }
+                    )
                 },
                 onFailure = { exception ->
                     _uiState.update { state ->
